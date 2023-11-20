@@ -1,48 +1,22 @@
-import "react-chatbot-kit/build/main.css";
-import config from "./ChatBot/config.tsx";
-import MessageParser from "./ChatBot/MessageParser.tsx";
-import ActionProvider from "./ChatBot/ActionProvider.tsx";
-import Header from "./components/shared/Header.tsx";
-import ChatBot from "./ChatBot/ChatBot.tsx";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  chatBotExitMessageSelector,
-  chatBotExitSelector,
-  chatSelector,
-} from "./redux/selector/chat.tsx";
-import { handleExitBot } from "./redux/features/chatSlice.ts";
+import { Route, Routes } from "react-router-dom";
+import { Home } from "./components/shared/home";
+import DoctorsList from "./components/shared/doctors/doctorsList";
+import CategoryState from "./lib/context/categoryState";
 
-function App() {
-  const dispatch = useDispatch();
-  const enroll = useSelector(chatSelector);
-  const chatbotExit = useSelector(chatBotExitSelector);
-  const chatbotExitMessage = useSelector(chatBotExitMessageSelector);
+export default function App() {
   return (
-    <div className="flex flex-col  items-center gap-12 self-stretch px-3">
-      {chatbotExit ? (
-        <div>
-          {chatbotExitMessage}
-          <br />
-          do you want to start new chat .
-          <br />
-          <span
-            onClick={() => dispatch(handleExitBot(false))}
-            className="text-primary underline cursor pointer underline-offset-4"
-          >
-            click Here!
-          </span>
-        </div>
-      ) : enroll ? (
-        <ChatBot
-          ActionProvider={ActionProvider}
-          MessageParser={MessageParser}
-          config={config}
-        />
-      ) : (
-        <Header />
-      )}
-    </div>
+    <CategoryState>
+      <div className="flex h-screen justify-center pt-12 px-3">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/:category/" element={<DoctorsList />} />
+          <Route path="*" element={<Error />} />
+        </Routes>
+      </div>
+    </CategoryState>
   );
 }
 
-export default App;
+function Error() {
+  return <div>Error </div>;
+}
